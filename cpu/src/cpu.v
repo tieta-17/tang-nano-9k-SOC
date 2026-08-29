@@ -1,15 +1,15 @@
 module cpu(
-    input clk,
-    input rst,
+    input i_clk,
+    input i_rst,
 
     // incoming memory response
-    input  [31:0] mem_read_data,
+    input  [31:0] i_mem_read_data,
 
     // outgoing memory request
-    output [31:0] mem_addr,
-    output [31:0] mem_write_data,
-    output        mem_read,
-    output        mem_write
+    output [31:0] o_mem_addr,
+    output [31:0] o_mem_write_data,
+    output        o_mem_read,
+    output        o_mem_write
     
 );  
     
@@ -21,7 +21,7 @@ module cpu(
     
     wire[31:0] pc_next = branch_taken ? branch_target : pc_current + 4;
 
-    pc u_pc(.i_clk(clk), .i_rst(rst), .i_pc_next(pc_next), 
+    pc u_pc(.i_clk(i_clk), .i_rst(i_rst), .i_pc_next(pc_next), 
             .o_pc_out(pc_current));
 
     wire [31:0] instr;
@@ -36,9 +36,9 @@ module cpu(
                                 .o_mem_read(mem_read_internal), .o_mem_to_reg(mem_to_reg), .o_branch(branch));
 
     wire [31:0] rs1_out, rs2_out;
-    wire [31:0] rd_in  = mem_to_reg ? mem_read_data : alu_out;
+    wire [31:0] rd_in  = mem_to_reg ? mem_read_internal : alu_out;
 
-    reg_file u_reg_file(.i_clk(clk), .i_we(reg_write), .i_rst(rst), 
+    reg_file u_reg_file(.i_clk(i_clk), .i_we(reg_write), .i_rst(i_rst), 
                         .i_rd_addr(instr[11:8]), .i_rd_data(rd_in), .i_rs1_addr(instr[15:12]), .i_rs2_addr(instr[19:16]), 
                         .o_rs1_data(rs1_out), .o_rs2_data(rs2_out));
     
@@ -61,9 +61,9 @@ module cpu(
     alu u_alu(.i_alu_op(alu_op), .i_a(alu_a), .i_b(alu_b), 
               .o_result(alu_out), .o_zero(zero_flag));
 
-    assign mem_addr = alu_out;
-    assign mem_write_data = rs2_out;
-    assign mem_read = mem_read_internal;
-    assign mem_write = mem_write_internal;
+    assign o_mem_addr = alu_out;
+    assign o_mem_write_data = rs2_out;
+    assign o_mem_read = mem_read_internal;
+    assign o_mem_write = mem_write_internal;
 
 endmodule

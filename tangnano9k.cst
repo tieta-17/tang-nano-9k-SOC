@@ -1,0 +1,32 @@
+// Tang Nano 9K constraints for soc_top
+// Sourced pin numbers: onboard 27MHz clock, 6 LEDs (bank 3, active-low/common-anode),
+// and the onboard USB-UART bridge (routes through the same USB cable used to flash).
+
+// clock
+IO_LOC "i_clk" 52;
+IO_PORT "i_clk" PULL_MODE=UP;
+
+// reset button (active-low on this board — invert in soc_top if you want i_rst active-high)
+IO_LOC "i_btn_rst" 3;
+IO_PORT "i_btn_rst" PULL_MODE=UP;
+
+// onboard USB-UART bridge — talks over the same USB cable used to program the board
+IO_LOC "i_uart_rx_serial" 18;
+IO_PORT "i_uart_rx_serial" IO_TYPE=LVCMOS33;
+
+IO_LOC "o_uart_tx_serial" 17;
+IO_PORT "o_uart_tx_serial" IO_TYPE=LVCMOS33;
+
+// 6 onboard LEDs — o_led[5:0] drives them; 
+IO_LOC "o_led[0]" 10;
+IO_PORT "o_led[0]" PULL_MODE=UP DRIVE=8;
+IO_LOC "o_led[1]" 11;
+IO_PORT "o_led[1]" PULL_MODE=UP DRIVE=8;
+IO_LOC "o_led[2]" 13;
+IO_PORT "o_led[2]" PULL_MODE=UP DRIVE=8;
+IO_LOC "o_led[3]" 14;
+IO_PORT "o_led[3]" PULL_MODE=UP DRIVE=8;
+IO_LOC "o_led[4]" 15;
+IO_PORT "o_led[4]" PULL_MODE=UP DRIVE=8;
+IO_LOC "o_led[5]" 16;
+IO_PORT "o_led[5]" PULL_MODE=UP DRIVE=8;
