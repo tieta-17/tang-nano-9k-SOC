@@ -29,6 +29,12 @@ module branch_path_cpu_tb;
 
     always #5 clk = ~clk;
 
+    integer i;
+    initial begin
+        for (i = 0; i < 16; i = i + 1)
+            UUT.u_reg_file.regs[i] = 32'b0;
+    end
+
     initial begin
         $dumpfile("branch_path_cpu_tb.vcd");
         $dumpvars(0, branch_path_cpu_tb);
