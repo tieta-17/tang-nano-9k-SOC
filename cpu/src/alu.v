@@ -3,9 +3,9 @@ module alu(
     input [31:0] i_a,          // input a
     input [31:0] i_b,          // input b
     output reg [31:0] o_result,    //ouput result
-    output zero
+    output o_zero
 ); 
-    assign zero = (o_result == 32'b0);
+    assign o_zero = (o_result == 32'b0);
     
     always @(*) begin
         case(i_alu_op)
