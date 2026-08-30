@@ -1,3 +1,4 @@
+`default_nettype none
 module control_unit (
     input [5:0] i_opcode,
     output reg o_reg_write,   // write result into rd? 1 for R-type, I-type, Loads, 0 for S-Type, B-Type

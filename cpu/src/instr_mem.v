@@ -1,3 +1,4 @@
+`default_nettype none
 module instr_mem(
     input [31:0] i_pc,
     output [31:0]  o_instr

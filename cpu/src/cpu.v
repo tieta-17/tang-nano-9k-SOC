@@ -1,3 +1,4 @@
+`default_nettype none
 module cpu(
     input i_clk,
     input i_rst,

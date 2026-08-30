@@ -1,3 +1,4 @@
+`default_nettype none
 module imm_gen(
     input [31:0] i_instr,
     input [1:0] i_instr_type,

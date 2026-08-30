@@ -1,9 +1,10 @@
+`default_nettype none
 module soc_top(
     input  i_clk,
     input  i_btn_rst,
     input  i_uart_rx_serial,
     output o_uart_tx_serial,
-    // output [31:0] o_gpio,
+    output [31:0] o_gpio,
     output [5:0]  o_led
 );
     wire i_rst = ~i_btn_rst;

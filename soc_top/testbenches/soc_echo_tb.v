@@ -11,7 +11,7 @@ module soc_echo_tb;
 
     soc_top UUT (
         .i_clk(clk),
-        .i_btn_rst_n(~rst),   // module expects active-low; invert our active-high testbench signal
+        .i_btn_rst(~rst),   // module expects active-low; invert our active-high testbench signal
         .i_uart_rx_serial(rx_serial),
         .o_uart_tx_serial(tx_serial),
         .o_gpio(gpio)

@@ -1,3 +1,4 @@
+`default_nettype none
 module reg_file(
     input i_clk,
     input i_we,
@@ -18,6 +19,6 @@ module reg_file(
     end
 
     // combinational read
-    assign o_rs1_data = (i_rs1_addr == 4'b0) ? 32'b0 : regs[i_rs1_addr*32 +: 32];
-    assign o_rs2_data = (i_rs2_addr == 4'b0) ? 32'b0 : regs[i_rs2_addr*32 +: 32];
+    assign o_rs1_data = (i_rs1_addr == 4'b0) ? 32'b0 : regs_flat[i_rs1_addr*32 +: 32];
+    assign o_rs2_data = (i_rs2_addr == 4'b0) ? 32'b0 : regs_flat[i_rs2_addr*32 +: 32];
 endmodule

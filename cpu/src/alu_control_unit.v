@@ -1,3 +1,4 @@
+`default_nettype none
 module alu_control_unit(
     input [5:0] i_opcode,
     input [1:0] i_funct2, // unused currently

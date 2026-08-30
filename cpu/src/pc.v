@@ -1,3 +1,4 @@
+`default_nettype none
 module pc(
     input i_clk,
     input i_rst,

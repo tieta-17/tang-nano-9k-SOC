@@ -1,3 +1,4 @@
+`default_nettype none
 module alu(
     input [3:0] i_alu_op,
     input [31:0] i_a,          // input a

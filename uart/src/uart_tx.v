@@ -1,3 +1,4 @@
+`default_nettype none
 // UART Transmitter for Tang Nano 9k
 // 27 MHz Clock --> 115200 baud rate; ~234 CLKS_PER_BIT
 module uart_tx
