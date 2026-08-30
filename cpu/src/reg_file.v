@@ -9,14 +9,15 @@ module reg_file(
     output [31:0] o_rs1_data,
     output [31:0] o_rs2_data
 );
-    reg [31:0] regs[15:0]; // 16 - 32 bit general purpose registers
+    reg[511:0] regs_flat;
+
     // synchronous write
     always @(posedge i_clk) begin
         if (i_we && (i_rd_addr != 4'b0)) 
-            regs[i_rd_addr] <= i_rd_data; 
+            regs_flat[i_rd_addr*32 +: 32] <= i_rd_data; 
     end
 
     // combinational read
-    assign o_rs1_data = (i_rs1_addr == 4'b0) ? 32'b0 : regs[i_rs1_addr];
-    assign o_rs2_data = (i_rs2_addr == 4'b0) ? 32'b0 : regs[i_rs2_addr];
+    assign o_rs1_data = (i_rs1_addr == 4'b0) ? 32'b0 : regs[i_rs1_addr*32 +: 32];
+    assign o_rs2_data = (i_rs2_addr == 4'b0) ? 32'b0 : regs[i_rs2_addr*32 +: 32];
 endmodule

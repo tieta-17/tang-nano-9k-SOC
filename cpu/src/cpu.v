@@ -36,7 +36,7 @@ module cpu(
                                 .o_mem_read(mem_read_internal), .o_mem_to_reg(mem_to_reg), .o_branch(branch));
 
     wire [31:0] rs1_out, rs2_out;
-    wire [31:0] rd_in  = mem_to_reg ? mem_read_internal : alu_out;
+    wire [31:0] rd_in  = mem_to_reg ? i_mem_read_data : alu_out;
 
     reg_file u_reg_file(.i_clk(i_clk), .i_we(reg_write), .i_rst(i_rst), 
                         .i_rd_addr(instr[11:8]), .i_rd_data(rd_in), .i_rs1_addr(instr[15:12]), .i_rs2_addr(instr[19:16]), 
