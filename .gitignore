@@ -2,3 +2,4 @@
 *.vvp
 build/
 */sim
+utilization.sh
