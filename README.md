@@ -130,6 +130,11 @@ The current instruction ROM contains a small polling/echo program intended to:
 
 This end-to-end echo path is currently being debugged at the SoC/hardware level.
 
+UART is verified using picocom and the following command:
+```Bash
+picocom --baud 115200 --flow none /dev/ttyUSB1
+```
+
 ## Verification
 
 The repository contains directed testbenches for individual blocks and integrated datapaths, including:
