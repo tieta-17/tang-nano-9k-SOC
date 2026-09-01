@@ -61,9 +61,37 @@ echo "==> [3/4] Pack bitstream (gowin_pack)"
 gowin_pack -d "${FAMILY}" -o "${BUILD_DIR}/${TOP_MODULE}.fs" "${BUILD_DIR}/${TOP_MODULE}_pnr.json"
 
 echo "==> [4/4] Flash to board (openFPGALoader)"
+
+MAX_FLASH_ATTEMPTS=3
+
 if [ "$1" == "--flash" ]; then
-    echo "    (writing to persistent FLASH)"
-    openFPGALoader -b "${BOARD}" -f "${BUILD_DIR}/${TOP_MODULE}.fs"
+    echo "    (writing to persistent FLASH, up to ${MAX_FLASH_ATTEMPTS} attempts)"
+    attempt=1
+    success=0
+    while [ "$attempt" -le "$MAX_FLASH_ATTEMPTS" ]; do
+        echo "    -- flash attempt ${attempt}/${MAX_FLASH_ATTEMPTS}"
+        # Temporarily disable 'set -e' so a failed attempt doesn't kill the
+        # whole script — we want to inspect the output and retry ourselves.
+        set +e
+        OUTPUT=$(openFPGALoader -b "${BOARD}" --unprotect-flash -f "${BUILD_DIR}/${TOP_MODULE}.fs" 2>&1)
+        EXIT_CODE=$?
+        set -e
+        echo "$OUTPUT"
+
+        if [ "$EXIT_CODE" -eq 0 ] && echo "$OUTPUT" | grep -qi "CRC check.*Success"; then
+            success=1
+            break
+        fi
+
+        echo "    -- attempt ${attempt} failed (exit code ${EXIT_CODE}, or CRC check did not report Success)"
+        attempt=$((attempt + 1))
+    done
+
+    if [ "$success" -ne 1 ]; then
+        echo "ERROR: flash write failed after ${MAX_FLASH_ATTEMPTS} attempts."
+        echo "       Try reseating the USB cable or checking the board connection before retrying."
+        exit 1
+    fi
 else
     echo "    (writing to volatile SRAM — use --flash for persistent)"
     openFPGALoader -b "${BOARD}" "${BUILD_DIR}/${TOP_MODULE}.fs"
