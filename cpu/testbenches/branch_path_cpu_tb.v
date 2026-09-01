@@ -9,13 +9,13 @@ module branch_path_cpu_tb;
     wire        mem_read, mem_write;
 
     cpu UUT (
-        .clk           (clk),
-        .rst           (rst),
-        .mem_read_data (mem_read_data),
-        .mem_addr      (mem_addr),
-        .mem_write_data(mem_write_data),
-        .mem_read      (mem_read),
-        .mem_write     (mem_write)
+        .i_clk           (clk),
+        .i_rst           (rst),
+        .i_mem_read_data (mem_read_data),
+        .o_mem_addr      (mem_addr),
+        .o_mem_write_data(mem_write_data),
+        .o_mem_read      (mem_read),
+        .o_mem_write     (mem_write)
     );
 
     data_mem u_data_mem (
@@ -32,7 +32,7 @@ module branch_path_cpu_tb;
     integer i;
     initial begin
         for (i = 0; i < 16; i = i + 1)
-            UUT.u_reg_file.regs[i] = 32'b0;
+            UUT.u_reg_file.regs_flat = 512'b0;
     end
 
     initial begin
@@ -79,19 +79,19 @@ module branch_path_cpu_tb;
 
         repeat (12) @(posedge clk);
 
-        $display("x1 = %0d (expect 5)",  UUT.u_reg_file.regs[1]);
-        $display("x2 = %0d (expect 5)",  UUT.u_reg_file.regs[2]);
-        $display("x3 = %0d (expect 7)",  UUT.u_reg_file.regs[3]);
-        $display("x4 = %0d (expect 7, from LW)", UUT.u_reg_file.regs[4]);
-        $display("x7 = %0d (expect 42)", UUT.u_reg_file.regs[7]);
-        $display("x8 = %0d (expect 0, poison must be skipped)", UUT.u_reg_file.regs[8]);
-        $display("x9 = %0d (expect 0, poison must be skipped)", UUT.u_reg_file.regs[9]);
+        $display("x1 = %0d (expect 5)",  UUT.u_reg_file.regs_flat[1*32 +: 32]);
+        $display("x2 = %0d (expect 5)",  UUT.u_reg_file.regs_flat[2*32 +: 32]);
+        $display("x3 = %0d (expect 7)",  UUT.u_reg_file.regs_flat[3*32 +: 32]);
+        $display("x4 = %0d (expect 7, from LW)", UUT.u_reg_file.regs_flat[4*32 +: 32]);
+        $display("x7 = %0d (expect 42)", UUT.u_reg_file.regs_flat[7*32 +: 32]);
+        $display("x8 = %0d (expect 0, poison must be skipped)", UUT.u_reg_file.regs_flat[8*32 +: 32]);
+        $display("x9 = %0d (expect 0, poison must be skipped)", UUT.u_reg_file.regs_flat[9*32 +: 32]);
 
-        if (UUT.u_reg_file.regs[3] == 32'd7 &&
-            UUT.u_reg_file.regs[4] == 32'd7 &&
-            UUT.u_reg_file.regs[7] == 32'd42 &&
-            UUT.u_reg_file.regs[8] == 32'd0 &&
-            UUT.u_reg_file.regs[9] == 32'd0)
+        if (UUT.u_reg_file.regs_flat[3*32 +: 32] == 32'd7 &&
+            UUT.u_reg_file.regs_flat[4*32 +: 32] == 32'd7 &&
+            UUT.u_reg_file.regs_flat[7*32 +: 32] == 32'd42 &&
+            UUT.u_reg_file.regs_flat[8*32 +: 32] == 32'd0 &&
+            UUT.u_reg_file.regs_flat[9*32 +: 32] == 32'd0)
             $display("Test Passed");
         else
             $display("Test Failed");

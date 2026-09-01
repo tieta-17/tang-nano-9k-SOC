@@ -20,7 +20,7 @@ module cpu(
     wire branch_condition_met = (instr[7:6] /*funct2*/ == 2'b00) ? zero_flag : ~zero_flag;
     wire branch_taken = branch & branch_condition_met;
     
-    wire[31:0] pc_next = branch_taken ? branch_target : pc_current + 4;
+    wire[31:0] pc_next = stall_read ? pc_current : (branch_taken ? branch_target : pc_current + 4);
 
     pc u_pc(.i_clk(i_clk), .i_rst(i_rst), .i_pc_next(pc_next), 
             .o_pc_out(pc_current));
@@ -39,7 +39,19 @@ module cpu(
     wire [31:0] rs1_out, rs2_out;
     wire [31:0] rd_in  = mem_to_reg ? i_mem_read_data : alu_out;
 
-    reg_file u_reg_file(.i_clk(i_clk), .i_we(reg_write), .i_rst(i_rst), 
+    // stall ing for load_word from ram
+    reg load_stage;
+    always @(posedge i_clk) begin
+        if (i_rst) 
+            load_stage <= 1'b0;
+        else
+            load_stage <= mem_read_internal & ~load_stage;
+    end
+    
+    wire stall_read = mem_read_internal & ~load_stage;
+    wire reg_write_effective = mem_read_internal ? load_stage : reg_write;
+
+    reg_file u_reg_file(.i_clk(i_clk), .i_we(reg_write_effective), .i_rst(i_rst), 
                         .i_rd_addr(instr[11:8]), .i_rd_data(rd_in), .i_rs1_addr(instr[15:12]), .i_rs2_addr(instr[19:16]), 
                         .o_rs1_data(rs1_out), .o_rs2_data(rs2_out));
     

@@ -7,14 +7,14 @@ module soc_echo_tb;
     reg rx_serial = 1;
 
     wire tx_serial;
-    wire [31:0] gpio;
+    wire [5:0] led;
 
     soc_top UUT (
         .i_clk(clk),
         .i_btn_rst(~rst),   // module expects active-low; invert our active-high testbench signal
         .i_uart_rx_serial(rx_serial),
         .o_uart_tx_serial(tx_serial),
-        .o_gpio(gpio)
+        .o_led(led)
     );
 
     // Checker uart_rx — decodes whatever the FPGA echoes back

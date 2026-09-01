@@ -4,7 +4,7 @@ module soc_top(
     input  i_btn_rst,
     input  i_uart_rx_serial,
     output o_uart_tx_serial,
-    output [31:0] o_gpio,
+    // output [31:0] o_gpio,
     output [5:0]  o_led
 );
     wire i_rst = ~i_btn_rst;
@@ -54,7 +54,7 @@ module soc_top(
         else if (mem_write & gpio_sel)
             gpio_out <= mem_write_data;
     end
-    assign o_gpio = gpio_out;
+    // assign o_gpio = gpio_out;
 
     // TODO 4: instantiate uart_tx — what should i_Tx_DV be wired to, given
     //         what you already know about single-cycle stores?
@@ -113,7 +113,7 @@ module soc_top(
 
     // tang nano output
     
-    assign o_led = ~o_gpio[5:0];
+    assign o_led = ~gpio_out[5:0];
     
 
 endmodule
