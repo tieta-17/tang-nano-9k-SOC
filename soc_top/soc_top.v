@@ -28,7 +28,7 @@ module soc_top(
     parameter UART_RX_ADDR = 32'h408;
     parameter UART_STATUS_ADDR = 32'h40C;
 
-    wire ram_sel    = (mem_addr <  RAM_ADDR + 32'h4);
+    wire ram_sel    = (mem_addr <  RAM_ADDR + 32'h1);
     wire gpio_sel   = (mem_addr == GPIO_ADDR);
     wire uart_tx_sel= (mem_addr == UART_TX_ADDR);
     wire uart_rx_sel= (mem_addr == UART_RX_ADDR);

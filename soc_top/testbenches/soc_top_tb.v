@@ -7,14 +7,14 @@ module soc_top_tb;
     reg rx_serial = 1;   // idle high, nothing incoming for this test
 
     wire tx_serial;
-    wire [31:0] gpio;
+    wire [5:0] led;
 
     soc_top UUT (
         .i_clk(clk),
         .i_rst(rst),
         .i_uart_rx_serial(rx_serial),
         .o_uart_tx_serial(tx_serial),
-        .o_gpio(gpio)
+        .o_led(led)
     );
 
     // Checker uart_rx — decodes whatever soc_top actually transmits,
@@ -60,7 +60,7 @@ module soc_top_tb;
         @(posedge checked_dv);
         $display("uart tx byte = %0d / '%c' (expect 72 / 'H')", checked_byte, checked_byte);
 
-        if (gpio[5:0] == 6'b010101 && checked_byte == 8'd72)
+        if (led[5:0] == 6'b010101 && checked_byte == 8'd72)
             $display("Test Passed");
         else
             $display("Test Failed");
