@@ -1,3 +1,4 @@
 *.vcd
 *.vvp
 build/
+*/sim
