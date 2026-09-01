@@ -11,7 +11,7 @@ module led_reset_test (
     output [5:0] o_led
 );
     wire i_rst = ~i_btn_rst;
-    reg [25:0] counter = 26'd0;
+    reg [27:0] counter = 26'd0;
 
     always @(posedge i_clk) begin
         if (i_rst)
@@ -21,7 +21,7 @@ module led_reset_test (
     end
 
     // Tang Nano 9K LEDs are active-low.
-    assign o_led = ~counter[25:20];
+    assign o_led = ~counter[27:22];
 
     // Keep the UART output in its normal idle-high state during this test.
     assign o_uart_tx_serial = 1'b1;
