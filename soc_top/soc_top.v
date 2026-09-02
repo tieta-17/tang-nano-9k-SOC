@@ -19,22 +19,26 @@ module soc_top(
         .o_mem_read(mem_read), .o_mem_write(mem_write)
     );
 
-    // TODO 1: address decoder — pick your ranges, declare ram_sel/gpio_sel/
-    //         uart_tx_sel/uart_rx_sel as wires comparing mem_addr
+    // Address decoder
 
-    parameter RAM_ADDR = 32'h3FF; //256 words
-    parameter GPIO_ADDR = 32'h400;
-    parameter UART_TX_ADDR = 32'h404;
-    parameter UART_RX_ADDR = 32'h408;
-    parameter UART_STATUS_ADDR = 32'h40C;
+    parameter RAM_ADDR          = 32'h400; //256 words
+    parameter LED_ADDR          = 32'h400;
+    parameter UART_TX_ADDR      = 32'h404;
+    parameter UART_RX_ADDR      = 32'h408;
+    parameter UART_STATUS_ADDR  = 32'h40C;
+    parameter GPIO_ENABLE       = 32'h410;
+    parameter GPIO_OUT_BITS     = 32'h414;
+    parameter GPIO_IN           = 32'h418;
 
-    wire ram_sel    = (mem_addr <  RAM_ADDR + 32'h1);
-    wire gpio_sel   = (mem_addr == GPIO_ADDR);
-    wire uart_tx_sel= (mem_addr == UART_TX_ADDR);
-    wire uart_rx_sel= (mem_addr == UART_RX_ADDR);
-    wire status_sel = (mem_addr == UART_STATUS_ADDR); // bit0 = tx busy, bit2 = rx ready
+    wire ram_sel            = (mem_addr <  RAM_ADDR);
+    wire led_sel            = (mem_addr == LED_ADDR);
+    wire uart_tx_sel        = (mem_addr == UART_TX_ADDR);
+    wire uart_rx_sel        = (mem_addr == UART_RX_ADDR);
+    wire status_sel         = (mem_addr == UART_STATUS_ADDR); // bit0 = tx busy, bit2 = rx ready
+    wire gpio_enable_sel    = (mem_addr == GPIO_ENABLE);
+    wire gpio_out_bits_sel  = (mem_addr == GPIO_OUT_BITS);
+    wire gpio_in            = (mem_addr == GPIO_IN)
 
-    // TODO 2: instantiate data_mem, gate its i_mem_write with (mem_write & ram_sel)
     // RAM
     wire [31:0] ram_read_data;
     data_mem u_ram (
@@ -46,18 +50,39 @@ module soc_top(
         .o_data_out(ram_read_data)
     );
 
-    // TODO 3: GPIO register — a plain reg, written when (mem_write & gpio_sel)
-    reg [31:0] gpio_out;
+    // led registers on boar
+    reg [5:0] led_out;
     always  @(posedge i_clk) begin
         if (i_rst) 
-            gpio_out <= 32'b0;
-        else if (mem_write & gpio_sel)
-            gpio_out <= mem_write_data;
+            led_out <= 6'b0;
+        else if (mem_write & led_sel)
+            led_out <= mem_write_data[5:0];
     end
-    // assign o_gpio = gpio_out;
+    
 
-    // TODO 4: instantiate uart_tx — what should i_Tx_DV be wired to, given
-    //         what you already know about single-cycle stores?
+    inout [1:0] gpio_pins;
+
+    reg [1:0] gpio_enable;
+    always @(posedge i_clk) begin
+        if (i_rst)
+            gpio_enable <= 2'b00;
+        else if (mem_write & gpio_enable_sel)
+            gpio_enable <= mem_write_data[1:0];
+    end
+
+    reg [1:0] gpio_out_bits;
+
+    always @(posedge i_clk) begin
+        if (i_rst)
+            gpio_out_bits <= 2'b00;
+        else if (mem_write & gpio_out_bits_sel)
+            gpio_out_bits <= mem_write_data[1:0];
+    end
+
+    assign gpio_pins[0] = gpio_enable[0] ? gpio_out_bits[0] : 1'bz;
+    assign gpio_pins[1] = gpio_enable[1] ? gpio_out_bits[1] : 1'bz;
+
+    // UART TX
 
     wire tx_dv = mem_write & uart_tx_sel;
     wire tx_active, tx_done;
@@ -105,7 +130,7 @@ module soc_top(
 
     // read-data mux — which signal selects ram vs gpio vs uart data
     assign mem_read_data = ram_sel ? ram_read_data :
-                            gpio_sel ? gpio_out :
+                            led_sel ? led_out :
                             uart_rx_sel ? {24'b0, rx_byte_latched} :
                             status_sel ? status_data :
                             32'b0;
@@ -113,7 +138,7 @@ module soc_top(
 
     // tang nano output
     
-    assign o_led = ~gpio_out[5:0];
+    assign o_led = ~led_out[5:0];
     
 
 endmodule

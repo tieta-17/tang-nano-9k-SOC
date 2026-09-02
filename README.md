@@ -187,7 +187,7 @@ The build targets the Gowin **GW1NR-LV9QN88PC6/I5** device used on the Tang Nano
 
 A major goal of this project is learning how architectural decisions map onto a small FPGA rather than maximizing CPU complexity.
 
-The saved place-and-route netlist shows that the current asynchronous two-read-port register file is the dominant logic structure: approximately **86% of LUT1–LUT4 cells in the mapped design are associated with the register-file hierarchy**. This makes register-file architecture and memory inference a more important optimization target than simply adding pipeline stages.
+Currently, the design utilizes around 44% of available LUTs on the device (approx 4000). This is due to register file having two write ports, which is unable to be mapped to dedicated BRAM modules. Therefore, the register file is built entirely out of flip-flops and multiplexors.
 
 The current design therefore prioritizes a compact single-cycle SoC with usable peripherals over forcing a larger pipelined processor onto the Tang Nano 9K.
 

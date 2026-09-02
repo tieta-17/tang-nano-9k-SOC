@@ -7,7 +7,7 @@ module alu(
     output o_zero
 ); 
     assign o_zero = (o_result == 32'b0);
-    wire [4:0] shift_amt = i_b[0:4]; // only first 5 bits are meaningful for 32 bit integer (0-31 bit shift)
+    wire [4:0] shift_amt = i_b[4:0]; // only first 5 bits are meaningful for 32 bit integer (0-31 bit shift)
     always @(*) begin
         case(i_alu_op)
             4'b0000 : o_result = i_a + i_b;       // ADD
