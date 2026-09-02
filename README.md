@@ -187,7 +187,7 @@ The build targets the Gowin **GW1NR-LV9QN88PC6/I5** device used on the Tang Nano
 
 A major goal of this project is learning how architectural decisions map onto a small FPGA rather than maximizing CPU complexity.
 
-Currently, the design utilizes around 44% of available LUTs on the device (approx 4000). This is due to register file having two write ports, which is unable to be mapped to dedicated BRAM modules. Therefore, the register file is built entirely out of flip-flops and multiplexors.
+Currently, the design utilizes around 44% of the device's available LUTs (~4000). The largest contributor being the register file. As it requires two simultaneous read ports (rs1 and rs2), it cannot be mapped onto the FPGA's BRAM modules, which only support a single read port. As a result, the register file is synthesized entirely out of flip-flops and multiplexors, which costs more LUTs than a BRAM implementation. However, the dual simulaneous reads are required for the single-cycle datapath to fetch both ALU operands in one clock cycle
 
 The current design therefore prioritizes a compact single-cycle SoC with usable peripherals over forcing a larger pipelined processor onto the Tang Nano 9K.
 

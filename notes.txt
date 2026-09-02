@@ -1,0 +1,24 @@
+Iteration 2: ALU Barrel Shifter Modification
+
+Cell type breakdown for: build/soc_top_pnr.json
+
+  LUT1                 1303
+  MUX2_LUT5            1297
+  LUT4                 1103
+  LUT3                 921
+  MUX2_LUT6            537
+  LUT2                 517
+  DFFE                 506
+  MUX2_LUT7            233
+  ALU                  184
+  MUX2_LUT8            105
+  DFFRE                67
+  OBUF                 7
+  DFFR                 4
+  IBUF                 3
+  SP                   2
+  DFFS                 2
+  GSR                  1
+  GOWIN_VCC            1
+  GOWIN_GND            1
+  DFFSE                1
