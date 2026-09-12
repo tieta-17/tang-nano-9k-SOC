@@ -30,3 +30,11 @@ IO_LOC "o_led[4]" 15;
 IO_PORT "o_led[4]" PULL_MODE=UP DRIVE=8;
 IO_LOC "o_led[5]" 16;
 IO_PORT "o_led[5]" PULL_MODE=UP DRIVE=8;
+
+// GPIO input header pins — jumper-wire test target
+// 3.3V-tolerant, safe for direct connection to VCC/GND
+IO_LOC "gpio_pins[0]" 25;
+IO_PORT "gpio_pins[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+
+IO_LOC "gpio_pins[1]" 26;
+IO_PORT "gpio_pins[1]" IO_TYPE=LVCMOS33 PULL_MODE=UP;

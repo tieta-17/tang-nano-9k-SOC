@@ -4,7 +4,7 @@ module soc_top(
     input  i_btn_rst,
     input  i_uart_rx_serial,
     output o_uart_tx_serial,
-    // output [31:0] o_gpio,
+    inout [1:0] gpio_pins,
     output [5:0]  o_led
 );
     wire i_rst = ~i_btn_rst;
@@ -37,7 +37,7 @@ module soc_top(
     wire status_sel         = (mem_addr == UART_STATUS_ADDR); // bit0 = tx busy, bit2 = rx ready
     wire gpio_enable_sel    = (mem_addr == GPIO_ENABLE);
     wire gpio_out_bits_sel  = (mem_addr == GPIO_OUT_BITS);
-    wire gpio_in            = (mem_addr == GPIO_IN)
+    wire gpio_in_sel        = (mem_addr == GPIO_IN);
 
     // RAM
     wire [31:0] ram_read_data;
@@ -59,8 +59,7 @@ module soc_top(
             led_out <= mem_write_data[5:0];
     end
     
-
-    inout [1:0] gpio_pins;
+    wire [1:0] gpio_in_raw = gpio_pins;
 
     reg [1:0] gpio_enable;
     always @(posedge i_clk) begin
@@ -96,10 +95,6 @@ module soc_top(
         .o_Tx_Done(tx_done)
     );
 
-    // TODO 5: instantiate uart_rx, plus the holding register + ready flag
-    //         (you designed this already, a while back — what clears the
-    //         ready flag, and what signal should gate that?)
-
     wire        rx_dv;
     wire [7:0]  rx_byte;
     reg  [7:0]  rx_byte_latched;
@@ -129,11 +124,14 @@ module soc_top(
     end
 
     // read-data mux — which signal selects ram vs gpio vs uart data
-    assign mem_read_data = ram_sel ? ram_read_data :
-                            led_sel ? led_out :
-                            uart_rx_sel ? {24'b0, rx_byte_latched} :
-                            status_sel ? status_data :
-                            32'b0;
+    assign mem_read_data = ram_sel           ? ram_read_data :
+                        led_sel          ? led_out :
+                        uart_rx_sel      ? {24'b0, rx_byte_latched} :
+                        status_sel       ? status_data :
+                        gpio_enable_sel   ? {30'b0, gpio_enable} :
+                        gpio_out_bits_sel ? {30'b0, gpio_out_bits} :
+                        gpio_in_sel       ? {30'b0, gpio_in_raw} :
+                        32'b0;
 
 
     // tang nano output
