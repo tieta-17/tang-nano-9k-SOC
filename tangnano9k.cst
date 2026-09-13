@@ -36,5 +36,5 @@ IO_PORT "o_led[5]" PULL_MODE=UP DRIVE=8;
 IO_LOC "gpio_pins[0]" 25;
 IO_PORT "gpio_pins[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP;
 
-IO_LOC "gpio_pins[1]" 26;
+IO_LOC "gpio_pins[1]" 27;
 IO_PORT "gpio_pins[1]" IO_TYPE=LVCMOS33 PULL_MODE=UP;

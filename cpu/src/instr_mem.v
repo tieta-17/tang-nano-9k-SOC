@@ -22,12 +22,12 @@ module instr_mem(
         */
 
         // GPIO Enables
-        instr_mem[0] = {16'd0, 4'h0, 4'h1, 2'b00, 6'b01_0000}; // ADDI x1, x0, 0
+        instr_mem[0] = {16'd1, 4'h0, 4'h1, 2'b00, 6'b01_0000}; // ADDI x1, x0, 1
         instr_mem[1] = {16'd3, 4'h0, 4'h4, 2'b00, 6'b01_0000}; // ADDI x4, x0, 3 configure both pins
         instr_mem[2] = {12'h041, 4'h4, 4'h0, 4'h0, 2'b00, 6'b11_0000}; // SW, x4, GPIO_ENABLE(x0) gpio enable
 
     // loop: 
-        instr_mem[3] = {16'd1, 4'h1, 4'h1, 2'b00, 6'b01_0010}; // XORI x1, x1, 1 -- toggle bit0
+        instr_mem[3] = {16'd3, 4'h1, 4'h1, 2'b00, 6'b01_0010}; // XORI x1, x1, 3 -- toggle bit0 and bit1
         instr_mem[4] = {12'h041, 4'h1, 4'h0, 4'h4, 2'b00, 6'b11_0000}; // SW, x1, GPIO_OUT_BITS
         instr_mem[5] = {16'd6750, 4'h0, 4'h2, 2'b00, 6'b01_0000}; // ADDI x2, x0, 6750 -- outer counter
 
