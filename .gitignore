@@ -3,3 +3,5 @@
 build/
 */sim
 utilization.sh
+*.log
+*.txt
